@@ -1,0 +1,22 @@
+{
+  "name": "noderestserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imranq2/noderestserver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/imranq2/noderestserver/issues"
+  },
+  "homepage": "https://github.com/imranq2/noderestserver#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
