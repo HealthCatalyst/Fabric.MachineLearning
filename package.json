@@ -1,0 +1,25 @@
+{
+    "name": "dockerhealthcareai",
+    "version": "1.0.0",
+    "description": "docker to run healthcare.ai",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "docker-build": "docker build -t dockerhealthcareai .",
+        "docker": "npm run docker-build && docker run -it --rm -p 8080:8080 --name dockerhealthcareai dockerhealthcareai",
+        "docker-publish": "npm run docker-build && docker push imranq2/dockerhealthcareai"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/imranq2/noderestserver.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/imranq2/noderestserver/issues"
+    },
+    "homepage": "https://github.com/imranq2/noderestserver#readme",
+    "dependencies": {
+        "express": "^4.15.2"
+    }
+}
