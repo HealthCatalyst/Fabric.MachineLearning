@@ -28,7 +28,7 @@ app.get('/jobs', function(req, res) {
 
     var child_process = require('child_process');
 
-    console.log(child_process);
+    //console.log(child_process);
     var child = child_process.spawn("Rscript", ["--vanilla", "/usr/local/R/simple.R"]);
     child.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
@@ -40,6 +40,7 @@ app.get('/jobs', function(req, res) {
 
     child.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
+        res.end("OK");
     });
 
     // var out = R("example/simple.R")
@@ -51,4 +52,21 @@ app.get('/jobs', function(req, res) {
 
     //         res.end(d);
     //     });
+
+    // var attitude = JSON.parse(
+    //     require("fs").readFileSync("/src/r-script-master/example/attitude.json", "utf8"));
+
+    // R("example/ex-async.R")
+    //     .data({ df: attitude, nGroups: 3, fxn: "mean" })
+    //     .call(function(err, d) {
+    //         if (err) {
+    //             console.log(err);
+    //             //throw err;
+    //         }
+    //         console.log(d);
+
+    //         res.end("OK");
+
+    //     });
+
 });
