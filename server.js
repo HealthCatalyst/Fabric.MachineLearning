@@ -6,60 +6,27 @@ var express = require('express'),
 
 var R = require("./r-script-master/index.js");
 
+var bodyParser = require('body-parser');
+
+var scriptsFolder = "/usr/share/fabricml/";
+
+// create application/json parser
+var textParser = bodyParser.text({ type: 'application/x-www-form-urlencoded' });
+
+var jsonParser = bodyParser.json({ type: 'application/x-www-form-urlencoded' });
+
 app.listen(port);
 
 console.log('todo list RESTful API server started on: ' + port);
 
-app.get('/exit', function(req, res) {
-    process.exit(0);
-});
-
-app.get('/jobs', function(req, res) {
-
-    //    console.log(spawn);
-
-    // var out = R("example/ex-async.R")
-    //     .data("hello world", 20)
-    //     .call(function(err, d) {
-    //         if (err) throw err;
-    //         console.log("===Start Object");
-    //         //console.log(d);
-    //         console.log("====End Object");
-
-    //         res.end(d);
-    //     });
-
-    // var child_process = require('child_process');
-
-    // //console.log(child_process);
-    // var child = child_process.spawn("Rscript", ["--vanilla", "/usr/local/R/simple.R"]);
-    // child.stdout.on('data', (data) => {
-    //     console.log(`stdout: ${data}`);
-    // });
-
-    // child.stderr.on('data', (data) => {
-    //     console.log(`stderr: ${data}`);
-    // });
-
-    // child.on('close', (code) => {
-    //     console.log(`child process exited with code ${code}`);
-    //     res.end("OK");
-    // });
-
-    // var out = R("example/simple.R")
-    //     .call(function(err, d) {
-    //         if (err) throw err;
-    //         console.log("===Start Object");
-    //         console.log(d);
-    //         console.log("====End Object");
-
-    //         res.end(d);
-    //     });
+var bootstrap = function() {
 
     var attitude = JSON.parse(
         require("fs").readFileSync("src/r-script-master/example/attitude.json", "utf8"));
 
-    R("src/r-script-master/example/ex-async.R")
+    console.log("Running bootstrap script");
+
+    R(scriptsFolder + "ex-async.R")
         .data({ df: attitude, nGroups: 3, fxn: "mean" })
         .call(function(err, d) {
             if (err) {
@@ -71,10 +38,51 @@ app.get('/jobs', function(req, res) {
             console.log("==OUTPUT==");
             console.log(d);
 
-            res.end("OK");
+            console.log("=== Bootstrap completed ===");
+        });
+}
+
+app.get('/exit', function(req, res) {
+    res.status(200).end();
+    process.exit(0);
+});
+
+app.post('/jobs/:scriptName.:extension', jsonParser, function(req, res) {
+
+    if (!req.body) return res.sendStatus(400);
+
+    console.log(Object.prototype.toString.call(req.body));
+
+    console.log(req.body);
+
+    var attitude = req.body;
+
+    var scriptPath = scriptsFolder + req.params.scriptName + "." + req.params.extension;
+
+    var fs = require('fs');
+    if (!fs.existsSync(scriptPath)) {
+        res.status(500).end(scriptPath + " does not exist in the container");
+        return;
+    }
+
+    console.log("Running", scriptPath);
+
+    R(scriptPath)
+        .data({ df: attitude, nGroups: 3, fxn: "mean" })
+        .call(function(err, d) {
+            if (err) {
+                console.log("==ERROR==");
+                console.log(err);
+                //throw err;
+                res.status(500).end();
+            }
+
+            console.log("==OUTPUT==");
+            console.log(d);
+
+            res.status(200).json(d);
 
         });
-
 });
 
 app.get('/test', function(req, res) {
@@ -86,6 +94,8 @@ app.get('/test', function(req, res) {
             console.log(d);
             console.log("====End Object");
 
-            res.end(d);
+            res.status(200).end(d);
         });
 });
+
+bootstrap();

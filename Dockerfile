@@ -11,7 +11,6 @@ RUN useradd docker \
     && chown docker:docker /usr/lib64/R/library \
     && mkdir -p /usr/share/doc/R-3.3.3/html
  
-
 RUN yum -y update; yum clean all
 RUN yum -y install epel-release; yum clean all
 
@@ -29,6 +28,12 @@ RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; 
 RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('needs')"
 RUN Rscript -e "install.packages('jsonlite')"
+
+RUN mkdir -p /usr/share/fabricml
+
+ADD r-script-master/example/ex-sync.R /usr/share/fabricml
+ADD r-script-master/example/ex-async.R /usr/share/fabricml
+ADD r-script-master/example/simple.R /usr/share/fabricml
 
 # USER docker
 # USER root
@@ -60,12 +65,6 @@ RUN node --version
 ADD . /src
 
 RUN cd /src; npm install
-
-RUN mkdir -p /usr/local/R
-
-# ADD ex-sync.R /usr/local/R/
-# ADD ex-async.R /usr/local/R/
-# ADD r-script-master/example/simple.R /usr/local/R/
 
 EXPOSE 8080
 
