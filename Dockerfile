@@ -1,5 +1,5 @@
 FROM centos:centos6
-MAINTAINER The CentOS Project <cloud-ops@centos.org>
+MAINTAINER Health Catalyst <imran.qureshi@healthcatalyst.com>
 
 ## Set a default user. Available via runtime flag `--user docker` 
 ## Add user to 'staff' group, granting them write privileges to /usr/local/lib/R/site.library
@@ -29,11 +29,15 @@ RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('needs')"
 RUN Rscript -e "install.packages('jsonlite')"
 
+# install any other packages here
+
 RUN mkdir -p /usr/share/fabricml
 
 ADD r-script-master/example/ex-sync.R /usr/share/fabricml
 ADD r-script-master/example/ex-async.R /usr/share/fabricml
 ADD r-script-master/example/simple.R /usr/share/fabricml
+
+# add any other R scripts here
 
 # USER docker
 # USER root
