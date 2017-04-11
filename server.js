@@ -46,15 +46,33 @@ var runpython = function(scriptPath, callback) {
     var spawn = require('child_process').spawn,
         py = spawn('python', [scriptPath]),
         data = [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        dataString = '';
+        dataString = '',
+        errors = '';
 
     py.stdout.on('data', function(data) {
+        console.log("Received data", data);
         dataString += data.toString();
     });
     py.stdout.on('end', function() {
         console.log('Sum of numbers=', dataString);
-        callback(null, JSON.parse(dataString));
+        callback(null, dataString);
     });
+
+    child.stderr.on("data", function(d) {
+        errors += d;
+    });
+
+    child.stderr.on("end", function() {
+        // NOTE: Warning or Info messages get caught in stderr!
+        if (errors) {
+            errors = errors.toString();
+            if (errors.indexOf('Error ') != -1) callback(new Error(errors));
+            else errors = null; // To let the stdout be sent to callback.
+        }
+    });
+
+    console.log(JSON.stringify(data));
+
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
 };
@@ -93,18 +111,26 @@ app.post('/jobs/:scriptName.:extension', jsonParser, function(req, res) {
                     console.log(err);
                     //throw err;
                     res.status(500).end();
+                } else {
+                    console.log("==OUTPUT==");
+                    console.log(d);
+
+                    res.status(200).json(d);
                 }
-
-                console.log("==OUTPUT==");
-                console.log(d);
-
-                res.status(200).json(d);
-
             });
     } else if (req.params.extension.toUpperCase() === "PY") {
         runpython(scriptPath,
             function(err, d) {
-                res.status(200).json(d);
+                //res.status(200);
+
+                if (err) {
+                    console.log("==ERROR==");
+                    console.log(err);
+                    //throw err;
+                    res.status(500).end();
+                } else {
+                    res.status(200).end(d);
+                }
             });
     }
 });

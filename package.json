@@ -6,7 +6,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "docker-build": "docker build -t fabric.machinelearning .",
-        "docker": "npm run docker-build && docker run -d --rm -p 8080:8080 --name fabric.machinelearning fabric.machinelearning",
+        "docker-stop": "docker stop fabric.machinelearning || echo 'no container to stop'",
+        "docker-remove": "docker rm fabric.machinelearning || echo 'no container to remove'",
+        "docker": "npm run docker-stop && npm run docker-remove && npm run docker-build && docker run -d -p 8080:8080 --name fabric.machinelearning fabric.machinelearning",
         "docker-publish": "docker build -t imranq2/fabric.machinelearning . && docker push imranq2/fabric.machinelearning"
     },
     "repository": {

@@ -9,6 +9,8 @@ def read_in():
     return json.loads(lines[0])
 
 def main():
+    # print ("compute_input.py")
+
     #get our data as an array from read_in()
     lines = read_in()
 
@@ -19,7 +21,7 @@ def main():
     lines_sum = np.sum(np_lines)
 
     #return the sum to the output stream
-    print lines_sum
+    print(lines_sum)
 
 #start process
 if __name__ == '__main__':
