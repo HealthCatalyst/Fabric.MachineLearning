@@ -43,6 +43,20 @@ ADD r-script-master/example/simple.R /usr/share/fabricml
 # USER root
 # RUN R --version
 
+# install python
+RUN cd /usr/src \
+    && curl -O https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz \
+    && tar xzf Python-3.5.2.tgz \
+    && cd Python-3.5.2 \
+    && ./configure \
+    && make altinstall \
+    && cd .. \
+    && rm Python-3.5.2.tgz
+
+RUN python3.5 -V
+
+# RUN yum install python35
+
 #install node.js v6
 # RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
 
