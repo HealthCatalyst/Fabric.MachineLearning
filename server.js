@@ -40,7 +40,24 @@ var bootstrap = function() {
 
             console.log("=== Bootstrap completed ===");
         });
-}
+};
+
+var runpython = function(scriptPath, callback) {
+    var spawn = require('child_process').spawn,
+        py = spawn('python', [scriptPath]),
+        data = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        dataString = '';
+
+    py.stdout.on('data', function(data) {
+        dataString += data.toString();
+    });
+    py.stdout.on('end', function() {
+        console.log('Sum of numbers=', dataString);
+        callback(null, JSON.parse(dataString));
+    });
+    py.stdin.write(JSON.stringify(data));
+    py.stdin.end();
+};
 
 app.get('/exit', function(req, res) {
     res.status(200).end();
@@ -67,22 +84,29 @@ app.post('/jobs/:scriptName.:extension', jsonParser, function(req, res) {
 
     console.log("Running", scriptPath);
 
-    R(scriptPath)
-        .data({ df: attitude, nGroups: 3, fxn: "mean" })
-        .call(function(err, d) {
-            if (err) {
-                console.log("==ERROR==");
-                console.log(err);
-                //throw err;
-                res.status(500).end();
-            }
+    if (req.params.extension.toUpperCase() === "R") {
+        R(scriptPath)
+            .data({ df: attitude, nGroups: 3, fxn: "mean" })
+            .call(function(err, d) {
+                if (err) {
+                    console.log("==ERROR==");
+                    console.log(err);
+                    //throw err;
+                    res.status(500).end();
+                }
 
-            console.log("==OUTPUT==");
-            console.log(d);
+                console.log("==OUTPUT==");
+                console.log(d);
 
-            res.status(200).json(d);
+                res.status(200).json(d);
 
-        });
+            });
+    } else if (req.params.extension.toUpperCase() === "PY") {
+        runpython(scriptPath,
+            function(err, d) {
+                res.status(200).json(d);
+            });
+    }
 });
 
 app.get('/test', function(req, res) {

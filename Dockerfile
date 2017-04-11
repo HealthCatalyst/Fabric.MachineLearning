@@ -31,12 +31,6 @@ RUN Rscript -e "install.packages('jsonlite')"
 
 # install any other packages here
 
-RUN mkdir -p /usr/share/fabricml
-
-ADD r-script-master/example/ex-sync.R /usr/share/fabricml
-ADD r-script-master/example/ex-async.R /usr/share/fabricml
-ADD r-script-master/example/simple.R /usr/share/fabricml
-
 # add any other R scripts here
 
 # USER docker
@@ -54,8 +48,6 @@ RUN cd /usr/src \
     && rm Python-3.5.2.tgz
 
 RUN python3.5 -V
-
-# RUN yum install python35
 
 #install node.js v6
 # RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
@@ -79,11 +71,21 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 RUN node --version
 
+RUN Rscript -e "install.packages('dplyr')"
+
 # add our project
 ADD . /src
 
 RUN cd /src; npm install
 
 EXPOSE 8080
+
+RUN mkdir -p /usr/share/fabricml
+
+ADD r-script-master/example/ex-sync.R /usr/share/fabricml
+ADD r-script-master/example/ex-async.R /usr/share/fabricml
+ADD r-script-master/example/simple.R /usr/share/fabricml
+
+ADD python-script/examples/compute_input.py /usr/share/fabricml
 
 CMD ["node", "/src/server.js"]
