@@ -16,7 +16,7 @@ RUN yum -y install epel-release; yum clean all
 
 RUN chown docker:docker /usr/lib64/R/library 
 
-RUN ls -ld /usr/lib64/R/library
+# RUN ls -ld /usr/lib64/R/library
 
 RUN yum -y install R; yum clean all
 

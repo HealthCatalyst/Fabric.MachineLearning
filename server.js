@@ -58,11 +58,11 @@ var runpython = function(scriptPath, callback) {
         callback(null, dataString);
     });
 
-    child.stderr.on("data", function(d) {
+    py.stderr.on("data", function(d) {
         errors += d;
     });
 
-    child.stderr.on("end", function() {
+    py.stderr.on("end", function() {
         // NOTE: Warning or Info messages get caught in stderr!
         if (errors) {
             errors = errors.toString();
