@@ -56,13 +56,13 @@ RUN Rscript -e "install.packages('healthcareai')"
 #     && python3.5 -V \
 #     && pip list
 
-RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
-    && bash usr/src/Miniconda.sh -b -p /opt/conda \
-    && source /opt/conda/bin/activate \
-    && /opt/conda/bin/conda install -y numpy \
-    && /opt/conda/bin/conda list
-
-ENV PATH /opt/conda/bin:$PATH
+#RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
+#    && bash usr/src/Miniconda.sh -b -p /opt/conda \
+#    && source /opt/conda/bin/activate \
+#    && /opt/conda/bin/conda install -y numpy \
+#    && /opt/conda/bin/conda list
+#
+#ENV PATH /opt/conda/bin:$PATH
 
 # RUN curl -sSL  | bash
 
