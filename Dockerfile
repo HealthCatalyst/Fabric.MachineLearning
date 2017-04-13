@@ -56,13 +56,16 @@ RUN Rscript -e "install.packages('healthcareai')"
 #     && python3.5 -V \
 #     && pip list
 
-#RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
-#    && bash usr/src/Miniconda.sh -b -p /opt/conda \
-#    && source /opt/conda/bin/activate \
-#    && /opt/conda/bin/conda install -y numpy \
-#    && /opt/conda/bin/conda list
-#
-#ENV PATH /opt/conda/bin:$PATH
+# CentOS 7 does not have bzip2 and miniconda requires it for installation
+RUN yum -y install bzip2
+
+RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
+   && bash usr/src/Miniconda.sh -b -p /opt/conda \
+   && source /opt/conda/bin/activate \
+   && /opt/conda/bin/conda install -y numpy \
+   && /opt/conda/bin/conda list
+
+ENV PATH /opt/conda/bin:$PATH
 
 # RUN curl -sSL  | bash
 
@@ -98,6 +101,8 @@ RUN mkdir -p /usr/share/fabricml
 ADD r-script-master/example/ex-sync.R /usr/share/fabricml
 ADD r-script-master/example/ex-async.R /usr/share/fabricml
 ADD r-script-master/example/simple.R /usr/share/fabricml
+
+ADD r-script-master/example/healthcareaitest.R /usr/share/fabricml
 
 ADD python-script/examples/compute_input.py /usr/share/fabricml
 
