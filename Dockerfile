@@ -1,4 +1,4 @@
-FROM centos:centos6
+FROM centos:centos7
 MAINTAINER Health Catalyst <imran.qureshi@healthcatalyst.com>
 
 ## Set a default user. Available via runtime flag `--user docker` 
@@ -13,6 +13,7 @@ RUN useradd docker \
  
 RUN yum -y update; yum clean all
 RUN yum -y install epel-release; yum clean all
+RUN yum -y install unixODBC-devel
 
 RUN chown docker:docker /usr/lib64/R/library 
 
@@ -29,6 +30,8 @@ RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('needs')"
 RUN Rscript -e "install.packages('jsonlite')"
 RUN Rscript -e "install.packages('dplyr')"
+RUN Rscript -e "install.packages('RODBC')"
+RUN Rscript -e "install.packages('healthcareai')"
 
 # install any other packages here
 
@@ -53,13 +56,13 @@ RUN Rscript -e "install.packages('dplyr')"
 #     && python3.5 -V \
 #     && pip list
 
-RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
-    && bash usr/src/Miniconda.sh -b -p /opt/conda \
-    && source /opt/conda/bin/activate \
-    && /opt/conda/bin/conda install -y numpy \
-    && /opt/conda/bin/conda list
-
-ENV PATH /opt/conda/bin:$PATH
+#RUN curl -N https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh --output usr/src/Miniconda.sh \
+#    && bash usr/src/Miniconda.sh -b -p /opt/conda \
+#    && source /opt/conda/bin/activate \
+#    && /opt/conda/bin/conda install -y numpy \
+#    && /opt/conda/bin/conda list
+#
+#ENV PATH /opt/conda/bin:$PATH
 
 # RUN curl -sSL  | bash
 
