@@ -103,21 +103,29 @@ app.post('/jobs/:scriptName.:extension', jsonParser, function(req, res) {
     console.log("Running", scriptPath);
 
     if (req.params.extension.toUpperCase() === "R") {
-        R(scriptPath)
-            .data({ df: attitude, nGroups: 3, fxn: "mean" })
-            .call(function(err, d) {
-                if (err) {
-                    console.log("==ERROR==");
-                    console.log(err);
-                    //throw err;
-                    res.status(500).end();
-                } else {
-                    console.log("==OUTPUT==");
-                    console.log(d);
+        try {
+            R(scriptPath)
+                .data({ df: attitude, nGroups: 3, fxn: "mean" })
+                .call(function(err, d) {
+                    if (err) {
+                        console.log("==ERROR==");
+                        console.log(err);
+                        //throw err;
+                        var result = { errors: err, data: d || "" };
+                        console.log("===RESULT==");
+                        console.log(result);
+                        res.status(200).json(result);
+                    } else {
+                        console.log("==OUTPUT==");
+                        var result2 = { data: d || "" };
+                        console.log(result2);
 
-                    res.status(200).json(d);
-                }
-            });
+                        res.status(200).json(result2);
+                    }
+                });
+        } catch (error) {
+            res.status(500).json(error);
+        }
     } else if (req.params.extension.toUpperCase() === "PY") {
         runpython(scriptPath,
             function(err, d) {

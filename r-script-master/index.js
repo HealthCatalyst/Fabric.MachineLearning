@@ -39,28 +39,35 @@ R.prototype.call = function(_opts, _callback) {
         }, _opts.timeout);
     }
     child.stderr.on("data", function(d) {
+        // NOTE: Warning or Info messages get caught in stderr!
+        //if (d.indexOf('Error ') != -1) {
         body.err += d;
+        //}
     });
     child.stdout.on("data", function(d) {
-        console.log("===Received data");
+        console.log("===Received data from stdout");
         console.log(d);
-        console.log("==End data");
+        console.log("==End of received data");
         body.out += d;
     });
-    child.stderr.on("end", function() {
-        // NOTE: Warning or Info messages get caught in stderr!
-        if (body.err) {
-            body.err = body.err.toString();
-            if (body.err.indexOf('Error ') != -1) callback(new Error(body.err));
-            else body.err = null; // To let the stdout be sent to callback.
-        }
-    });
+    child.stderr.on("end", function() {});
     child.stdout.on("end", function() {
         if (body.timeout) callback(new Error('Too long run... terminated'));
-        console.log("==data at end");
-        console.log(body.out);
-        console.log("==end data at end");
-        if (!body.err) callback(null, JSON.parse(body.out));
+        try {
+            console.log("stdout has ended");
+            console.log("==data at end");
+            console.log(body.out);
+            console.log("==end data at end");
+            console.log("Error", body.err);
+            if (body.err.length > 1) {
+                callback(body.err, JSON.parse(body.out));
+            } else {
+                callback(null, JSON.parse(body.out));
+            }
+        } catch (error) {
+            callback(error);
+        }
+
     });
 };
 
