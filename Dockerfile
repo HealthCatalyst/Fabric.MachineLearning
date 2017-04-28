@@ -107,3 +107,9 @@ ADD r-script-master/example/healthcareaitest.R /usr/share/fabricml
 ADD python-script/examples/compute_input.py /usr/share/fabricml
 
 CMD ["node", "/src/server.js"]
+
+# Install MSSQL driver
+RUN curl https://packages.microsoft.com/config/rhel/6/prod.repo > /etc/yum.repos.d/mssql-release.repo && echo "curled" \
+&& ACCEPT_EULA=Y yum install -y msodbcsql-13.1.4.0-1 mssql-tools-14.0.3.0-1 unixODBC-devel && echo "installed" \
+&& echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && echo "exported" \
+&& echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && echo "exported again"
