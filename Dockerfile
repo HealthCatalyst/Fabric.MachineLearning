@@ -18,9 +18,9 @@ RUN yum -y install authconfig krb5-workstation pam_krb5 samba-common oddjob-mkho
 # RUN mkdir -p /opt/install/
 
 # add script to create keytab file for kerberos authentication with Active Directory
-ADD https://imranq2.github.io/InstallScripts/setupkeytab.txt /opt/install/setupkeytab.sh
-ADD https://imranq2.github.io/InstallScripts/signintoactivedirectory.txt /opt/install/signintoactivedirectory.sh
-ADD https://imranq2.github.io/InstallScripts/testsql.txt /opt/install/testsql.sh
+ADD https://healthcatalyst.github.io/InstallScripts/setupkeytab.txt /opt/install/setupkeytab.sh
+ADD https://healthcatalyst.github.io/InstallScripts/signintoactivedirectory.txt /opt/install/signintoactivedirectory.sh
+ADD https://healthcatalyst.github.io/InstallScripts/testsql.txt /opt/install/testsql.sh
 
 RUN chmod +x /opt/install/setupkeytab.sh \
     && chmod +x /opt/install/signintoactivedirectory.sh \
