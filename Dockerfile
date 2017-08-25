@@ -38,6 +38,14 @@ RUN yum -y install R; yum clean all
 
 ADD R.css /usr/share/doc/R-3.3.3/html/
 
+# Install MSSQL driver
+RUN curl -o /etc/yum.repos.d/mssql-release.repo https://packages.microsoft.com/config/rhel/7/prod.repo && echo "curled" \
+    && yum remove unixODBC-utf16 unixODBC-utf16-devel \
+    && ACCEPT_EULA=Y yum install -y msodbcsql-13.1.4.0-1 mssql-tools-14.0.3.0-1 unixODBC-devel && echo "installed" \
+    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && echo "exported to bash_profile" \
+    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && echo "exported to bashrc" \
+    && source ~/.bashrc
+
 #setup R configs
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r); .libPaths('/usr/lib64/R/library')" > ~/.Rprofile \
     && Rscript -e "install.packages('ggplot2')" \
@@ -101,15 +109,6 @@ ADD r-script-master/example/healthcareaitest.R /usr/share/fabricml
 ADD python-script/examples/compute_input.py /usr/share/fabricml
 
 # add Python script to test database connection
-
-
-# Install MSSQL driver
-RUN curl -o /etc/yum.repos.d/mssql-release.repo https://packages.microsoft.com/config/rhel/7/prod.repo && echo "curled" \
-    && yum remove unixODBC-utf16 unixODBC-utf16-devel \
-    && ACCEPT_EULA=Y yum install -y msodbcsql-13.1.4.0-1 mssql-tools-14.0.3.0-1 unixODBC-devel && echo "installed" \
-    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && echo "exported to bash_profile" \
-    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && echo "exported to bashrc" \
-    && source ~/.bashrc
 
 EXPOSE 8080
 
