@@ -46,7 +46,6 @@ RUN curl -o /etc/yum.repos.d/mssql-release.repo https://packages.microsoft.com/c
     && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc && echo "exported to bashrc" \
     && source ~/.bashrc
 
-#setup R configs
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r); .libPaths('/usr/lib64/R/library')" > ~/.Rprofile \
     && Rscript -e "install.packages('ggplot2')" \
     && Rscript -e "install.packages('needs')" \
