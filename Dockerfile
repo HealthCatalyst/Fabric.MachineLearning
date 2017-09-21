@@ -48,7 +48,7 @@ RUN curl -o /etc/yum.repos.d/mssql-release.repo https://packages.microsoft.com/c
 
 # Setup R configs. R package versions are not yet specified; will use most recent.
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r); .libPaths('/usr/lib64/R/library')" > ~/.Rprofile \
-    && Rscript -e "install.packages(c('ggplot2', 'jsonlite', 'dplyr', 'RODBC', 'healthcareai'))"
+    && Rscript -e "install.packages(c('ggplot2', 'needs', 'jsonlite', 'dplyr', 'RODBC', 'healthcareai'))"
 # install any other packages here
 
 # CentOS 7 does not have bzip2 and miniconda requires it for installation
