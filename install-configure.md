@@ -31,7 +31,7 @@ Docker images are fundamentally immutable. This means that any changes done to o
 - **Docker Container**:
     + A running instance of an image. Changes do not persist after destruction.
 
-## Install Docker
+## Install Docker on a Linux Machine
 
 1. Install Docker
     `curl -sSL https://healthcatalyst.github.io/InstallScripts/installdocker.txt | sh`
@@ -41,17 +41,22 @@ Docker images are fundamentally immutable. This means that any changes done to o
 3. Start docker service
     `curl -sSL https://healthcatalyst.github.io/InstallScripts/setupdocker.txt | sh`
 
-## Install Fabric.MachineLearning
+## Install the Fabric.MachineLearning Docker Image
 
 1. Download and install the **fabric.machinelearning** docker image and authenticate the container to the specified domain.
     `curl -sSL https://healthcatalyst.github.io/InstallScripts/installmachinelearning.txt | sh -s <username> <domain>`
 
 2. Authenticate the container to the domain:
-    `docker exec fabric.machinelearning opt/install/setupkeytab.sh $username $domain $password`
+    - `docker exec fabric.machinelearning opt/install/setupkeytab.sh $username $domain $password`
+    - For example if your user is **jane.doe** your domain is **healthydata.local** and your password is **supersecret1234**
+        + `docker exec fabric.machinelearning opt/install/setupkeytab.sh jane.doe healthydata.local 'supersecret1234'`
+`
 
 3. Verify domain authentication:
     - Check for SQL connectivity where $servername is a full name to a sql server in the domain.
-        `docker exec fabric.machinelearning opt/install/testsql.sh $servername`
+        - `docker exec fabric.machinelearning opt/install/testsql.sh $servername`
+        - For example, if your server is **hcs-gm0004.hqcatalyst.local** run `docker exec fabric.machinelearning opt/install/testsql.sh hcs-gm0004.hqcatalyst.local`
+
     - This assumes the given username has access rights.
 
 ## Executing R Inside the Container
